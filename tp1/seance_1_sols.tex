@@ -1,0 +1,446 @@
+\documentclass[pdf]{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{helvet}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xspace}
+\usepackage{url}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[pdf]{pstricks}
+%\usepackage{rotating}
+\usepackage{pst-node}
+\usepackage[crop=on]{auto-pst-pdf}
+
+\DeclareMathOperator{\cover}{cover}
+\DeclareMathOperator{\supp}{support}
+\DeclareMathOperator{\freq}{frequency}
+
+\title{LINGI2364: Mining Patterns in Data\\\bf Exercise session 1: Frequent Itemset Mining}
+\date{11 February 2020}
+\author{Gilles Peiffer}
+
+\begin{document}
+
+\maketitle
+\setcounter{section}{2}
+\section{Solutions}
+\begin{enumerate}
+	\item \begin{enumerate}
+		\item \[
+		\begin{array}{cccc}
+		\mathcal{S} & \cover(\mathcal{S}) & \supp(\mathcal{S}) & \freq(\mathcal{S}) \\\\
+		\{C, D\} & \{1, 3, 8\} & 3 & 3/10 \\
+		\{F\} & \{0, 8\} & 2 & 1/5 \\
+		\{B, D\} & \{2, 3, 5, 6, 9\} & 5 & 1/2
+		\end{array}
+		\]
+		\item From the anti-monotonicity property, one can deduce that \(\cover(\{B, C, D\}) \subseteq \cover(\{C, D\}) = \{1, 3, 8\}\), but also that \(\cover(\{B, C, D\}) \subseteq \cover(\{B, D\}) = \{2, 3, 5, 6, 9\}\).
+		Constraints on the support and frequency can be deduced from this.
+		Combining these results, one can find that \(\cover(\{B, C, D\}) \subseteq \cover(\{C, D\}) \cap  \cover(\{B, D\}) = \{3\}\), which can again be translated into constraints on the support and frequency.
+	\end{enumerate}
+	\item \begin{enumerate}
+		\item The frequent itemsets are as given in red, with their support next to them:
+		\begin{center}
+			\definecolor {yellowtwenty} {cmyk} {0,0,0,0}
+			%\definecolor{yellowtwenty}{gray}{0.3}
+			\definecolor{gray7}{gray}{0.7}
+			
+			\everymath{\mathsf{\xdef\mysf{\mathgroup\the\mathgroup\relax}}\mysf}
+			
+			\begin{pspicture}(0.3,-6.6)(13.7,0)
+			\tiny
+			\rput(1.4,-5.2){\rnode{nABCD}{\fcolorbox{black}{white}{$\{A,B,C,D\}$}}}
+			\rput(4.2,-5.2){\rnode{nABCE}{\fcolorbox{black}{white}{$\{A,B,C,E\}$}}}
+			\rput(7,-5.2){\rnode{nABDE}{\fcolorbox{black}{white}{$\{A,B,D,E\}$}}}
+			\rput(9.8,-5.2){\rnode{nACDE}{\fcolorbox{black}{white}{$\{A,C,D,E\}$}}}
+			\rput(12.6,-5.2){\rnode{nBCDE}{\fcolorbox{black}{white}{$\{B,C,D,E\}$}}}
+			
+			
+			\rput(7,0){\rnode{n}{\fcolorbox{red}{yellowtwenty}{$\color{red}\emptyset, 8$}}}
+			\rput(1.4,-1.3){\rnode{nA}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A\}, 3$}}}
+			\ncline{nA}{n}
+			\rput(4.2,-1.3){\rnode{nB}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{B\}, 5$}}}
+			\ncline{nB}{n}
+			\rput(7,-1.3){\rnode{nC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{C\}, 6$}}}
+			\ncline{nC}{n}
+			\rput(9.8,-1.3){\rnode{nD}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{D\}, 5$}}}
+			\ncline{nD}{n}
+			\rput(12.6,-1.3){\rnode{nE}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{E\}, 2$}}}
+			\ncline{nE}{n}
+			\rput(0.7,-2.6){\rnode{nAB}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A,B\},3$}}}
+			\ncline{nAB}{nB}
+			\ncline{nAB}{nA}
+			\rput(2.1,-2.6){\rnode{nAC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A,C\}, 2$}}}
+			\ncline{nAC}{nC}
+			\ncline{nAC}{nA}
+			\rput(3.5,-2.6){\rnode{nAD}{\fcolorbox{red}{white}{$\color{red}\{A,D\}, 2$}}}
+			\ncline{nAD}{nD}
+			\ncline{nAD}{nA}
+			\rput(4.9,-2.6){\rnode{nAE}{\fcolorbox{black}{yellowtwenty}{$\color{black}\{A,E\}$}}}
+			\ncline{nAE}{nE}
+			\ncline{nAE}{nA}
+			\rput(6.3,-2.6){\rnode{nBC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{B,C\}, 4$}}}
+			\ncline{nBC}{nC}
+			\ncline{nBC}{nB}
+			\rput(7.7,-2.6){\rnode{nBD}{\fcolorbox{red}{white}{$\color{red}\{B,D\}, 3$}}}
+			\ncline{nBD}{nD}
+			\ncline{nBD}{nB}
+			\rput(9.1,-2.6){\rnode{nBE}{\fcolorbox{black}{yellowtwenty}{$\color{black}\{B,E\}$}}}
+			\ncline{nBE}{nE}
+			\ncline{nBE}{nB}
+			\rput(10.5,-2.6){\rnode{nCD}{\fcolorbox{red}{white}{$\color{red}\{C,D\}, 4$}}}
+			\ncline{nCD}{nD}
+			\ncline{nCD}{nC}
+			\rput(11.9,-2.6){\rnode{nCE}{\fcolorbox{black}{yellowtwenty}{$\color{black}\{C,E\}$}}}
+			\ncline{nCE}{nE}
+			\ncline{nCE}{nC}
+			\rput(13.3,-2.6){\rnode{nDE}{\fcolorbox{black}{yellowtwenty}{$\color{black}\{D,E\}$}}}
+			\ncline{nDE}{nE}
+			\ncline{nDE}{nD}
+			\rput(0.7,-3.9){\rnode{nABC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A,B,C\}, 2$}}}
+			\ncline{nABC}{nBC}
+			\ncline{nABC}{nAC}
+			\ncline{nABC}{nAB}
+			\rput(2.1,-3.9){\rnode{nABD}{\fcolorbox{red}{white}{$\color{red}\{A,B,D\}, 2$}}}
+			\ncline{nABD}{nBD}
+			\ncline{nABD}{nAD}
+			\ncline{nABD}{nAB}
+			\rput(3.5,-3.9){\rnode{nABE}{\fcolorbox{black}{yellowtwenty}{$\color{black}\{A,B,E\}$}}}
+			\ncline{nABE}{nBE}
+			\ncline{nABE}{nAE}
+			\ncline{nABE}{nAB}
+			\rput(4.9,-3.9){\rnode{nACD}{\fcolorbox{black}{white}{$\{A,C,D\}$}}}
+			\ncline{nACD}{nCD}
+			\ncline{nACD}{nAD}
+			\ncline{nACD}{nAC}
+			\rput(6.3,-3.9){\rnode{nACE}{\fcolorbox{black}{white}{$\{A,C,E\}$}}}
+			\ncline{nACE}{nCE}
+			\ncline{nACE}{nAE}
+			\ncline{nACE}{nAC}
+			\rput(10.5,-3.9){\rnode{nBCE}{\fcolorbox{black}{white}{$\{B,C,E\}$}}}
+			\ncline{nABCE}{nBCE}
+			\rput(9.1,-3.9){\rnode{nBCD}{\fcolorbox{red}{white}{$\color{red}\{B,C,D\}, 2$}}}
+			
+			\ncline{nABCD}{nBCD}
+			
+			\rput(7.7,-3.9){\rnode{nADE}{\fcolorbox{black}{white}{$\{A,D,E\}$}}}
+			\ncline{nADE}{nDE}
+			\ncline{nADE}{nAE}
+			\ncline{nADE}{nAD}
+			
+			
+			\ncline{nBCD}{nCD}
+			\ncline{nBCD}{nBD}
+			\ncline{nBCD}{nBC}
+			\ncline{nBCE}{nCE}
+			\ncline{nBCE}{nBE}
+			\ncline{nBCE}{nBC}
+			\rput(11.9,-3.9){\rnode{nBDE}{\fcolorbox{black}{white}{$\{B,D,E\}$}}}
+			\ncline{nBDE}{nDE}
+			\ncline{nBDE}{nBE}
+			\ncline{nBDE}{nBD}
+			\rput(13.3,-3.9){\rnode{nCDE}{\fcolorbox{black}{white}{$\{C,D,E\}$}}}
+			\ncline{nCDE}{nDE}
+			\ncline{nCDE}{nCE}
+			\ncline{nCDE}{nCD}
+			\ncline{nABCD}{nACD}
+			\ncline{nABCD}{nABD}
+			\ncline{nABCD}{nABC}
+			\ncline{nABCE}{nACE}
+			\ncline{nABCE}{nABE}
+			\ncline{nABCE}{nABC}
+			\ncline{nABDE}{nBDE}
+			\ncline{nABDE}{nADE}
+			\ncline{nABDE}{nABE}
+			\ncline{nABDE}{nABD}
+			\ncline{nACDE}{nCDE}
+			\ncline{nACDE}{nADE}
+			\ncline{nACDE}{nACE}
+			\ncline{nACDE}{nACD}
+			\ncline{nBCDE}{nCDE}
+			\ncline{nBCDE}{nBDE}
+			\ncline{nBCDE}{nBCE}
+			\ncline{nBCDE}{nBCD}
+			\rput(7,-6.5){\rnode{nABCDE}{\fcolorbox{black}{white}{$\{A,B,C,D,E\}$}}}
+			\ncline{nABCDE}{nBCDE}
+			\ncline{nABCDE}{nACDE}
+			\ncline{nABCDE}{nABDE}
+			\ncline{nABCDE}{nABCE}
+			\ncline{nABCDE}{nABCD}
+			\end{pspicture}
+		\end{center}
+		\item The Apriori algorithm proceeds from top to bottom.
+		At each level, green means a set was generated but removed after finding an infrequent subset, blue means it was generated, has no infrequent subsets, but was removed after computing its frequency, and finally red means the set is frequent.
+		Black simply denotes the existence of a set which was not generated.
+		\begin{center}
+			\definecolor {yellowtwenty} {cmyk} {0,0,0,0}
+			%\definecolor{yellowtwenty}{gray}{0.3}
+			\definecolor{gray7}{gray}{0.7}
+			\definecolor{green}{rgb}{0.01, 0.75, 0.24}
+			
+			\everymath{\mathsf{\xdef\mysf{\mathgroup\the\mathgroup\relax}}\mysf}
+			
+			\begin{pspicture}(0.3,-6.6)(13.7,0)
+			\tiny
+			\rput(1.4,-5.2){\rnode{nABCD}{\fcolorbox{green}{white}{$\color{green}\{A,B,C,D\}$}}}
+			\rput(4.2,-5.2){\rnode{nABCE}{\fcolorbox{green}{white}{$\color{green}\{A,B,C,E\}$}}}
+			\rput(7,-5.2){\rnode{nABDE}{\fcolorbox{green}{white}{$\color{green}\{A,B,D,E\}$}}}
+			\rput(9.8,-5.2){\rnode{nACDE}{\fcolorbox{green}{white}{$\color{green}\{A,C,D,E\}$}}}
+			\rput(12.6,-5.2){\rnode{nBCDE}{\fcolorbox{green}{white}{$\color{green}\{B,C,D,E\}$}}}
+			
+			
+			\rput(7,0){\rnode{n}{\fcolorbox{red}{yellowtwenty}{$\color{red}\emptyset$}}}
+			\rput(1.4,-1.3){\rnode{nA}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A\}$}}}
+			\ncline{nA}{n}
+			\rput(4.2,-1.3){\rnode{nB}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{B\}$}}}
+			\ncline{nB}{n}
+			\rput(7,-1.3){\rnode{nC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{C\}$}}}
+			\ncline{nC}{n}
+			\rput(9.8,-1.3){\rnode{nD}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{D\}$}}}
+			\ncline{nD}{n}
+			\rput(12.6,-1.3){\rnode{nE}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{E\}$}}}
+			\ncline{nE}{n}
+			\rput(0.7,-2.6){\rnode{nAB}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A,B\}$}}}
+			\ncline{nAB}{nB}
+			\ncline{nAB}{nA}
+			\rput(2.1,-2.6){\rnode{nAC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A,C\}$}}}
+			\ncline{nAC}{nC}
+			\ncline{nAC}{nA}
+			\rput(3.5,-2.6){\rnode{nAD}{\fcolorbox{red}{white}{$\color{red}\{A,D\}$}}}
+			\ncline{nAD}{nD}
+			\ncline{nAD}{nA}
+			\rput(4.9,-2.6){\rnode{nAE}{\fcolorbox{blue}{yellowtwenty}{$\color{blue}\{A,E\}$}}}
+			\ncline{nAE}{nE}
+			\ncline{nAE}{nA}
+			\rput(6.3,-2.6){\rnode{nBC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{B,C\}$}}}
+			\ncline{nBC}{nC}
+			\ncline{nBC}{nB}
+			\rput(7.7,-2.6){\rnode{nBD}{\fcolorbox{red}{white}{$\color{red}\{B,D\}$}}}
+			\ncline{nBD}{nD}
+			\ncline{nBD}{nB}
+			\rput(9.1,-2.6){\rnode{nBE}{\fcolorbox{blue}{yellowtwenty}{$\color{blue}\{B,E\}$}}}
+			\ncline{nBE}{nE}
+			\ncline{nBE}{nB}
+			\rput(10.5,-2.6){\rnode{nCD}{\fcolorbox{red}{white}{$\color{red}\{C,D\}$}}}
+			\ncline{nCD}{nD}
+			\ncline{nCD}{nC}
+			\rput(11.9,-2.6){\rnode{nCE}{\fcolorbox{blue}{yellowtwenty}{$\color{blue}\{C,E\}$}}}
+			\ncline{nCE}{nE}
+			\ncline{nCE}{nC}
+			\rput(13.3,-2.6){\rnode{nDE}{\fcolorbox{blue}{yellowtwenty}{$\color{blue}\{D,E\}$}}}
+			\ncline{nDE}{nE}
+			\ncline{nDE}{nD}
+			\rput(0.7,-3.9){\rnode{nABC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A,B,C\}$}}}
+			\ncline{nABC}{nBC}
+			\ncline{nABC}{nAC}
+			\ncline{nABC}{nAB}
+			\rput(2.1,-3.9){\rnode{nABD}{\fcolorbox{red}{white}{$\color{red}\{A,B,D\}$}}}
+			\ncline{nABD}{nBD}
+			\ncline{nABD}{nAD}
+			\ncline{nABD}{nAB}
+			\rput(3.5,-3.9){\rnode{nABE}{\fcolorbox{green}{yellowtwenty}{$\color{green}\{A,B,E\}$}}}
+			\ncline{nABE}{nBE}
+			\ncline{nABE}{nAE}
+			\ncline{nABE}{nAB}
+			\rput(4.9,-3.9){\rnode{nACD}{\fcolorbox{blue}{white}{$\color{blue}\{A,C,D\}$}}}
+			\ncline{nACD}{nCD}
+			\ncline{nACD}{nAD}
+			\ncline{nACD}{nAC}
+			\rput(6.3,-3.9){\rnode{nACE}{\fcolorbox{green}{white}{$\color{green}\{A,C,E\}$}}}
+			\ncline{nACE}{nCE}
+			\ncline{nACE}{nAE}
+			\ncline{nACE}{nAC}
+			\rput(10.5,-3.9){\rnode{nBCE}{\fcolorbox{green}{white}{$\color{green}\{B,C,E\}$}}}
+			\ncline{nABCE}{nBCE}
+			\rput(9.1,-3.9){\rnode{nBCD}{\fcolorbox{red}{white}{$\color{red}\{B,C,D\}$}}}
+			
+			\ncline{nABCD}{nBCD}
+			
+			\rput(7.7,-3.9){\rnode{nADE}{\fcolorbox{green}{white}{$\color{green}\{A,D,E\}$}}}
+			\ncline{nADE}{nDE}
+			\ncline{nADE}{nAE}
+			\ncline{nADE}{nAD}
+			
+			
+			\ncline{nBCD}{nCD}
+			\ncline{nBCD}{nBD}
+			\ncline{nBCD}{nBC}
+			\ncline{nBCE}{nCE}
+			\ncline{nBCE}{nBE}
+			\ncline{nBCE}{nBC}
+			\rput(11.9,-3.9){\rnode{nBDE}{\fcolorbox{green}{white}{$\color{green}\{B,D,E\}$}}}
+			\ncline{nBDE}{nDE}
+			\ncline{nBDE}{nBE}
+			\ncline{nBDE}{nBD}
+			\rput(13.3,-3.9){\rnode{nCDE}{\fcolorbox{green}{white}{$\color{green}\{C,D,E\}$}}}
+			\ncline{nCDE}{nDE}
+			\ncline{nCDE}{nCE}
+			\ncline{nCDE}{nCD}
+			\ncline{nABCD}{nACD}
+			\ncline{nABCD}{nABD}
+			\ncline{nABCD}{nABC}
+			\ncline{nABCE}{nACE}
+			\ncline{nABCE}{nABE}
+			\ncline{nABCE}{nABC}
+			\ncline{nABDE}{nBDE}
+			\ncline{nABDE}{nADE}
+			\ncline{nABDE}{nABE}
+			\ncline{nABDE}{nABD}
+			\ncline{nACDE}{nCDE}
+			\ncline{nACDE}{nADE}
+			\ncline{nACDE}{nACE}
+			\ncline{nACDE}{nACD}
+			\ncline{nBCDE}{nCDE}
+			\ncline{nBCDE}{nBDE}
+			\ncline{nBCDE}{nBCE}
+			\ncline{nBCDE}{nBCD}
+			\rput(7,-6.5){\rnode{nABCDE}{\fcolorbox{black}{white}{$\{A,B,C,D,E\}$}}}
+			\ncline{nABCDE}{nBCDE}
+			\ncline{nABCDE}{nACDE}
+			\ncline{nABCDE}{nABDE}
+			\ncline{nABCDE}{nABCE}
+			\ncline{nABCDE}{nABCD}
+			\end{pspicture}
+		\end{center}
+		\item The improved Apriori algorithm also proceeds from top to bottom.
+		The color coding is the same as in the previous exercise.
+		\begin{center}
+			\definecolor {yellowtwenty} {cmyk} {0,0,0,0}
+			%\definecolor{yellowtwenty}{gray}{0.3}
+			\definecolor{gray7}{gray}{0.7}
+			
+			\everymath{\mathsf{\xdef\mysf{\mathgroup\the\mathgroup\relax}}\mysf}
+			
+			\begin{pspicture}(0.3,-6.6)(13.7,0)
+			\tiny
+			\rput(1.4,-5.2){\rnode{nABCD}{\fcolorbox{blue}{white}{$\color{blue}\{A,B,C,D\}$}}}
+			\rput(4.2,-5.2){\rnode{nABCE}{\fcolorbox{black}{white}{$\{A,B,C,E\}$}}}
+			\rput(7,-5.2){\rnode{nABDE}{\fcolorbox{black}{white}{$\{A,B,D,E\}$}}}
+			\rput(9.8,-5.2){\rnode{nACDE}{\fcolorbox{black}{white}{$\{A,C,D,E\}$}}}
+			\rput(12.6,-5.2){\rnode{nBCDE}{\fcolorbox{black}{white}{$\{B,C,D,E\}$}}}
+			
+			
+			\rput(7,0){\rnode{n}{\fcolorbox{red}{yellowtwenty}{$\color{red}\emptyset$}}}
+			\rput(1.4,-1.3){\rnode{nA}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A\}$}}}
+			\ncline{nA}{n}
+			\rput(4.2,-1.3){\rnode{nB}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{B\}$}}}
+			\ncline{nB}{n}
+			\rput(7,-1.3){\rnode{nC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{C\}$}}}
+			\ncline{nC}{n}
+			\rput(9.8,-1.3){\rnode{nD}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{D\}$}}}
+			\ncline{nD}{n}
+			\rput(12.6,-1.3){\rnode{nE}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{E\}$}}}
+			\ncline{nE}{n}
+			\rput(0.7,-2.6){\rnode{nAB}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A,B\}$}}}
+			\ncline{nAB}{nB}
+			\ncline{nAB}{nA}
+			\rput(2.1,-2.6){\rnode{nAC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A,C\}$}}}
+			\ncline{nAC}{nC}
+			\ncline{nAC}{nA}
+			\rput(3.5,-2.6){\rnode{nAD}{\fcolorbox{red}{white}{$\color{red}\{A,D\}$}}}
+			\ncline{nAD}{nD}
+			\ncline{nAD}{nA}
+			\rput(4.9,-2.6){\rnode{nAE}{\fcolorbox{blue}{yellowtwenty}{$\color{blue}\{A,E\}$}}}
+			\ncline{nAE}{nE}
+			\ncline{nAE}{nA}
+			\rput(6.3,-2.6){\rnode{nBC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{B,C\}$}}}
+			\ncline{nBC}{nC}
+			\ncline{nBC}{nB}
+			\rput(7.7,-2.6){\rnode{nBD}{\fcolorbox{red}{white}{$\color{red}\{B,D\}$}}}
+			\ncline{nBD}{nD}
+			\ncline{nBD}{nB}
+			\rput(9.1,-2.6){\rnode{nBE}{\fcolorbox{blue}{yellowtwenty}{$\color{blue}\{B,E\}$}}}
+			\ncline{nBE}{nE}
+			\ncline{nBE}{nB}
+			\rput(10.5,-2.6){\rnode{nCD}{\fcolorbox{red}{white}{$\color{red}\{C,D\}$}}}
+			\ncline{nCD}{nD}
+			\ncline{nCD}{nC}
+			\rput(11.9,-2.6){\rnode{nCE}{\fcolorbox{blue}{yellowtwenty}{$\color{blue}\{C,E\}$}}}
+			\ncline{nCE}{nE}
+			\ncline{nCE}{nC}
+			\rput(13.3,-2.6){\rnode{nDE}{\fcolorbox{blue}{yellowtwenty}{$\color{blue}\{D,E\}$}}}
+			\ncline{nDE}{nE}
+			\ncline{nDE}{nD}
+			\rput(0.7,-3.9){\rnode{nABC}{\fcolorbox{red}{yellowtwenty}{$\color{red}\{A,B,C\}$}}}
+			\ncline{nABC}{nBC}
+			\ncline{nABC}{nAC}
+			\ncline{nABC}{nAB}
+			\rput(2.1,-3.9){\rnode{nABD}{\fcolorbox{red}{white}{$\color{red}\{A,B,D\}$}}}
+			\ncline{nABD}{nBD}
+			\ncline{nABD}{nAD}
+			\ncline{nABD}{nAB}
+			\rput(3.5,-3.9){\rnode{nABE}{\fcolorbox{black}{yellowtwenty}{$\color{black}\{A,B,E\}$}}}
+			\ncline{nABE}{nBE}
+			\ncline{nABE}{nAE}
+			\ncline{nABE}{nAB}
+			\rput(4.9,-3.9){\rnode{nACD}{\fcolorbox{blue}{white}{$\color{blue}\{A,C,D\}$}}}
+			\ncline{nACD}{nCD}
+			\ncline{nACD}{nAD}
+			\ncline{nACD}{nAC}
+			\rput(6.3,-3.9){\rnode{nACE}{\fcolorbox{black}{white}{$\{A,C,E\}$}}}
+			\ncline{nACE}{nCE}
+			\ncline{nACE}{nAE}
+			\ncline{nACE}{nAC}
+			\rput(10.5,-3.9){\rnode{nBCE}{\fcolorbox{black}{white}{$\{B,C,E\}$}}}
+			\ncline{nABCE}{nBCE}
+			\rput(9.1,-3.9){\rnode{nBCD}{\fcolorbox{red}{white}{$\color{red}\{B,C,D\}$}}}
+			
+			\ncline{nABCD}{nBCD}
+			
+			\rput(7.7,-3.9){\rnode{nADE}{\fcolorbox{black}{white}{$\{A,D,E\}$}}}
+			\ncline{nADE}{nDE}
+			\ncline{nADE}{nAE}
+			\ncline{nADE}{nAD}
+			
+			
+			\ncline{nBCD}{nCD}
+			\ncline{nBCD}{nBD}
+			\ncline{nBCD}{nBC}
+			\ncline{nBCE}{nCE}
+			\ncline{nBCE}{nBE}
+			\ncline{nBCE}{nBC}
+			\rput(11.9,-3.9){\rnode{nBDE}{\fcolorbox{black}{white}{$\{B,D,E\}$}}}
+			\ncline{nBDE}{nDE}
+			\ncline{nBDE}{nBE}
+			\ncline{nBDE}{nBD}
+			\rput(13.3,-3.9){\rnode{nCDE}{\fcolorbox{black}{white}{$\{C,D,E\}$}}}
+			\ncline{nCDE}{nDE}
+			\ncline{nCDE}{nCE}
+			\ncline{nCDE}{nCD}
+			\ncline{nABCD}{nACD}
+			\ncline{nABCD}{nABD}
+			\ncline{nABCD}{nABC}
+			\ncline{nABCE}{nACE}
+			\ncline{nABCE}{nABE}
+			\ncline{nABCE}{nABC}
+			\ncline{nABDE}{nBDE}
+			\ncline{nABDE}{nADE}
+			\ncline{nABDE}{nABE}
+			\ncline{nABDE}{nABD}
+			\ncline{nACDE}{nCDE}
+			\ncline{nACDE}{nADE}
+			\ncline{nACDE}{nACE}
+			\ncline{nACDE}{nACD}
+			\ncline{nBCDE}{nCDE}
+			\ncline{nBCDE}{nBDE}
+			\ncline{nBCDE}{nBCE}
+			\ncline{nBCDE}{nBCD}
+			\rput(7,-6.5){\rnode{nABCDE}{\fcolorbox{black}{white}{$\{A,B,C,D,E\}$}}}
+			\ncline{nABCDE}{nBCDE}
+			\ncline{nABCDE}{nACDE}
+			\ncline{nABCDE}{nABDE}
+			\ncline{nABCDE}{nABCE}
+			\ncline{nABCDE}{nABCD}
+			\end{pspicture}
+		\end{center}
+	\end{enumerate}
+	\item One good strategy would be to apply the Apriori algorithm to the first dataset to find frequent itemsets, and only compute the support on the second dataset for those itemsets which were found to be frequent for the first dataset.
+	
+	The maximum frequency constraint can be handled in a similar fashion as the minimum frequency constraint, by using an ``inverse Apriori'' algorithm which only looks at the subsets of infrequent sets (with \(\theta\) being the maximum cutoff) in the second dataset, and removes those which are too frequent.
+	One first applies the regular Apriori algorithm using the first dataset, and then applies the inverse Apriori algorithm using the second dataset on the frequent itemsets of the first dataset.
+	This algorithm is a consequence of the anti-monotonicity property.
+\end{enumerate}
+
+
+
+\end{document}

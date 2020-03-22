@@ -1,0 +1,403 @@
+\documentclass[pdf]{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{helvet}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{xspace}
+\usepackage{url}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[pdf]{pstricks}
+%\usepackage{rotating}
+\usepackage{pst-node}
+\usepackage{forest}
+\usepackage{mathrsfs}
+
+\newcommand{\db}{\mathcal{D}}
+\newcommand{\cover}[2]{\mathrm{cover}_{#1}({#2})}
+\newcommand{\bc}{\{B, C\}}
+\newcommand{\bd}{\{B, D\}}
+\newcommand{\be}{\{B, E\}}
+\newcommand{\seq}[1]{\langle #1 \rangle}
+\newcommand{\coverseq}[1]{\mathrm{cover}(\seq{#1})}
+
+\title{LINGI2364: Mining Patterns in Data\\\bf Exercise session 2: Depth-First Algorithms for Itemset Mining and Sequential Pattern Mining}
+\date{25 February 2020}
+\author{Gilles Peiffer}
+
+\begin{document}
+
+\maketitle
+\setcounter{section}{1}
+\section{Solutions}
+
+\begin{enumerate}
+	\item \begin{enumerate}
+		\item For a minimum support threshold of 2, the projected databases are obtained as follows (by convention, transactions which do not appear are empty):
+		\begin{align*}
+			\db_{\vert \emptyset}(t) &= \left\{\begin{array}{l@{\quad}l}
+			\db(t), & \textnormal{if } t \in \{0, \dots, 9\} \setminus \{7\}, \\
+			\db(7) \setminus \{G\}, & \textnormal{otherwise}.
+			\end{array} \right. \\\\
+			\db_{\vert \{B\}}(2) &= \{D\}, \\
+			\db_{\vert \{B\}}(3) &= \{C, D\}, \\
+			\db_{\vert \{B\}}(4) &= \{C\}, \\
+			\db_{\vert \{B\}}(5) &= \{D\}, \\
+			\db_{\vert \{B\}}(6) &= \{D, E\}, \\
+			\db_{\vert \{B\}}(7) &= \{C, D, E\}, \\
+			\db_{\vert \{B\}}(9) &= \{D\}. \\\\
+			\db_{\vert \{B, C\}}(3) &= \{D\}, \\
+			\db_{\vert \{B, C\}}(7) &= \{D\}.
+		\end{align*}
+		\item \begin{align*}
+			\cover{\db_{\vert \emptyset}}{\{A\}} &= \{0, 1, 5, 9\}, \\
+			\cover{\db_{\vert \emptyset}}{\{B\}} &= \{2, 3, 4, 5, 6, 7, 9\}, \\
+			\cover{\db_{\vert \emptyset}}{\{C\}} &= \{1, 3, 4, 7, 8\}, \\
+			\cover{\db_{\vert \emptyset}}{\{D\}} &= \{0, 1, 2, 3, 5, 6, 7, 8, 9\}, \\
+			\cover{\db_{\vert \emptyset}}{\{E\}} &= \{1, 6, 7\}, \\
+			\cover{\db_{\vert \emptyset}}{\{F\}} &= \{0, 8\}. \\\\
+			\cover{\db_{\vert \{B\}}}{\{C\}} &= \{3, 4, 7\}, \\
+			\cover{\db_{\vert \{B\}}}{\{D\}} &= \{2, 3, 5, 6, 7, 9\}, \\
+			\cover{\db_{\vert \{B\}}}{\{E\}} &= \{6, 7\}. \\\\
+			\cover{\db_{\vert \{B, C\}}}{\{D\}} &= \{3, 7\}.
+		\end{align*}
+		\item At node \(\{A\}\), the projected database is
+		\begin{align*}
+			\cover{\db_{\vert \{A\}}}{\{B\}} &= \{5, 9\}, \\
+			\cover{\db_{\vert \{A\}}}{\{D\}} &= \{0, 1, 5, 9\}.
+		\end{align*}
+		The DFS algorithm next explores node \(\{A, B\}\), which has the following projected database:
+		\begin{align*}
+			\cover{\db_{\vert \{A, B\}}}{\{D\}} &= \{5, 9\}.
+		\end{align*}
+		However, \(\cover{\db_{\vert \{A, B, D\}}}{I} = \emptyset\), for any item \(I\).
+		
+		The search thus backtracks, and explores node \(\{A, D\}\).
+		\(\cover{\db_{\vert \{A, D\}}}{I} = \emptyset\), for any item \(I\), hence the search backtracks, and then once again, back to the root node.
+		This concludes the DFS algorithm.
+		\item The inverted tid-list for \(\{A\}\) is \(\{2, 3, 4, 6, 7, 8\}\).
+		The inverted tid-list for \(\{B\}\) is \(\{0, 1, 8\}\).
+		The inverted tid-list for \(\{A, B\}\) can then be computed by taking the union of the previously identified inverted tid-lists for \(\{A\}\) and \(\{B\}\): \(\{0, 1, 2, 3, 4, 6, 7, 8\}\).
+		
+		Inverted tid-lists have the advantage that computing a set union is easier than computing an intersection.
+		However, computing the cover is harder, and has higher memory requirements, since very quickly, inverted tid-lists are close to \(\mathcal{T}\).
+	\end{enumerate}
+	\item \begin{enumerate}
+		\item The FP-tree for \(\emptyset\) is the following:
+		
+		\begin{center}
+			\begin{forest}
+				for tree={
+					parent anchor=south,
+					child anchor=north,
+					fit=band,% spaces the tree out a little to avoid collisions
+				}
+				[x, phantom
+					[Header Table
+						[\(F : 2\), no edge, tier=f, name=fhead
+							[\(E : 3\), tier=e, no edge, name=ehead
+								[\(D : 9\), tier=d, no edge, name=dhead
+									[\(C : 5\), tier=c, no edge, name=chead
+										[\(B : 7\), tier=b, no edge, name=bhead
+											[\(A : 4\), tier=a, no edge, name=ahead]
+										]
+									]
+								]
+							]
+						]
+					]
+					[\(\emptyset\), no edge, name=root
+						[\(F : 2\), tier=f, name=f1
+							[\(D : 2\), tier=d, name=d1
+								[\(C : 1\), tier=c, name=c1]
+								[\(A : 1\), tier=a, name=a1]
+							]
+						]
+						[\(E : 3\), tier=e, name=e1
+							[\(D : 3\), tier=d, name=d2
+								[\(C : 2\), tier=c, name=c2
+									[\(A : 1\), tier=a, name=a2]
+									[\(B: 1\), tier=b, name=b1]
+								]
+								[\(B : 1\), tier=b, name=b2]
+							]
+						]
+						[\(D : 4\), tier=d, name=d3
+							[\(C : 1\), tier=c, name=c3
+								[\(B : 1\), tier=b, name=b3]
+							]
+							[\(B : 3\), tier=b, name=b4
+								[\(A : 2\), tier=a, name=a3]
+							]
+						]
+						[\(C : 1\), tier=c, name=c4
+							[\(B : 1\), tier=b, name=b5]
+						]
+					]
+				]
+				\draw [red, ->] (fhead.east) -- (f1.west);
+				\draw [green, ->] (ehead.east) -- (e1.west);
+				\draw [blue, ->] (dhead.east) -- (d1.west);
+				\draw [blue, ->] (d1.east) -- (d2.west);
+				\draw [blue, ->] (d2.east) -- (d3.west);
+				\draw [orange, ->] (chead.east) -- (c1.west);
+				\draw [orange, ->] (c1.east) -- (c2.west);
+				\draw [orange, ->] (c2.east) -- (c3.west);
+				\draw [orange, ->] (c3.east) -- (c4.west);
+				\draw [purple, ->] (bhead.east) -- (b1.west);
+				\draw [purple, ->] (b1.east) -- (b2.west);
+				\draw [purple, ->] (b2.east) -- (b3.west);
+				\draw [purple, ->] (b3.east) -- (b4.west);
+				\draw [purple, ->] (b4.east) -- (b5.west);
+				\draw [yellow, ->] (ahead.east) -- (a1.west);
+				\draw [yellow, ->] (a1.east) -- (a2.west);
+				\draw [yellow, ->] (a2.east) -- (a3.west);
+			\end{forest}
+		\end{center}
+		
+		The FP-tree for \(\{B\}\) is the following:
+		
+		\begin{center}
+			\begin{forest}
+				for tree={
+					parent anchor=south,
+					child anchor=north,
+					fit=band,% spaces the tree out a little to avoid collisions
+				}
+				[x, phantom
+					[Header Table
+						[\(E : 2\), tier=e, no edge, name=ehead
+							[\(D : 6\), tier=d, no edge, name=dhead
+								[\(C : 3\), tier=c, no edge, name=chead]
+							]
+						]
+					]
+					[\(\{B\}\), no edge, name=root
+						[\(E : 2\), tier=e, name=e1
+							[\(D : 2\), tier=d, name=d1
+								[\(C : 1\), tier=c, name=c1]
+							]
+						]
+						[\(D : 4\), tier=d, name=d2
+							[\(C : 1\), tier=c, name=c2]
+						]
+						[\(C : 1\), tier=c, name=c3]
+					]
+				]
+				\draw [green, ->] (ehead.east) -- (e1.west);
+				\draw [blue, ->] (dhead.east) -- (d1.west);
+				\draw [blue, ->] (d1.east) -- (d2.west);
+				\draw [orange, ->] (chead.east) -- (c1.west);
+				\draw [orange, ->] (c1.east) -- (c2.west);
+				\draw [orange, ->] (c2.east) -- (c3.west);
+			\end{forest}
+		\end{center}
+		
+		The FP-tree for \(\{B, C\}\) is the following:
+		
+		\begin{center}
+			\begin{forest}
+				for tree={
+					parent anchor=south,
+					child anchor=north,
+					fit=band,% spaces the tree out a little to avoid collisions
+				}
+				[x, phantom
+					[Header Table
+						[\(D : 2\), tier=d, no edge, name=dhead]
+					]
+					[\(\bc\), no edge, name=root % weird workaround, idfk
+						[\(D : 2\), tier=d, name=d1]
+					]
+				]
+				\draw [blue, ->] (dhead.east) -- (d1.west);
+			\end{forest}
+		\end{center}
+		\item By sorting on the frequencies instead of alphabetically (\(D \to C \to E\)), one finds the following FP-tree for \(\{B\}\):
+		
+		\begin{center}
+			\begin{forest}
+				for tree={
+					parent anchor=south,
+					child anchor=north,
+					fit=band,% spaces the tree out a little to avoid collisions
+				}
+				[x, phantom
+					[Header Table
+						[\(D : 6\), tier=d, no edge, name=dhead
+							[\(C : 3\), tier=c, no edge, name=chead
+								[\(E : 2\), tier=e, no edge, name=ehead]
+							]
+						]
+					]
+					[\(\bd\), no edge, name=root
+						[\(D : 6\), tier=d, name=d1
+							[\(C : 2\), tier=c, name=c1
+								[\(E : 1\), tier=e, name=e1]
+							]
+							[\(E: 1\), tier=e, name=e2]
+						]
+						[\(C : 1\), tier=c, name=c2]
+					]
+				]
+				\draw [blue, ->] (dhead.east) -- (d1.west);
+				\draw [orange, ->] (chead.east) -- (c1.west);
+				\draw [orange, ->] (c1.east) -- (c2.west);
+				\draw [green, ->] (ehead.east) -- (e1.west);
+				\draw [green, ->] (e1.east) -- (e2.west);
+			\end{forest}
+		\end{center}
+		\item The first node to be explored is \(\{B, D\}\).
+		However, its FP-tree is empty.
+		The search backtracks, and visits \(\{B, C\}\), which has FP-tree
+		\begin{center}
+			\begin{forest}
+				for tree={
+					parent anchor=south,
+					child anchor=north,
+					fit=band,% spaces the tree out a little to avoid collisions
+				}
+				[x, phantom
+					[Header Table
+						[\(D : 2\), tier=d, no edge, name=dhead]
+					]
+					[\(\bc\), no edge, name=root % weird workaround, idfk
+						[\(D : 2\), tier=d, name=d1]
+					]
+				]
+				\draw [blue, ->] (dhead.east) -- (d1.west);
+			\end{forest}
+		\end{center}
+		The search then continues down its path, towards \(\{B, C, D\}\), which has an empty FP-tree.
+		The search backtracks twice, then visits \(\{B, E\}\), with FP-tree
+		\begin{center}
+			\begin{forest}
+				for tree={
+					parent anchor=south,
+					child anchor=north,
+					fit=band,% spaces the tree out a little to avoid collisions
+				}
+				[x, phantom
+					[Header Table
+						[\(D : 2\), tier=d, no edge, name=dhead]
+					]
+					[\(\be\), no edge, name=root % weird workaround, idfk
+						[\(D : 2\), tier=d, name=d1]
+					]
+				]
+				\draw [blue, ->] (dhead.east) -- (d1.west);
+			\end{forest}
+		\end{center}
+		The next child of this node, \(\{B, D, E\}\), has an empty FP-tree.
+		The search backtracks all the way up to the root node, and the algorithm terminates.
+	\end{enumerate}
+	\item \begin{enumerate}
+		\item \begin{align*}
+			\coverseq{\{A, B\}, \{C\}} &= \{0, 1\}, \\
+			\coverseq{\{A, B\}, \{D\}} &= \{0, 1\}, \\
+			\coverseq{\{A\}, \{B\}} &= \{2, 3\}, \\
+			\coverseq{\{A\}, \{D\}} &= \{0, 1, 2\}. \\
+		\end{align*}
+		\item The frequent sequences are:
+		\begin{itemize}
+			\item \(\seq{\{A\}}, \seq{\{B\}}, \seq{\{C\}}, \seq{\{D\}}\),
+			\item \(\seq{\{A, B\}}, \seq{\{A, C\}}\),
+			\item \(\seq{\{A\}, \{A\}}\), \(\seq{\{A\}, \{B\}}\), \(\seq{\{A\}, \{C\}}\), \(\seq{\{A\}, \{D\}}\), \(\seq{\{B\}, \{C\}}\), \(\seq{\{B\}, \{D\}}\), \(\seq{\{C\}, \{A\}}\), \(\seq{\{C\}, \{B\}}\), \(\seq{\{C\}, \{D\}}\),
+			\item \(\seq{\{A, B\}, \{C\}}, \seq{\{A, B\},\{D\}}\),
+			\item \(\seq{\{A\}, \{A, C\}}\).
+		\end{itemize}
+		\item Let \(F = \langle I_1,\dots,I_n \rangle \in (2^\mathcal{I})^*\) be a frequent sequence.
+		By anti-monotonicity, the sequence \(S = \langle J_1,\dots,J_m \rangle \in (2^\mathcal{I})^*\) is also frequent, if there exist integers \(1 \leq i_1 < \dots < i_m \leq n\) such that for all \(j\in\{1,\ldots,m\} : J_j \subseteq I_{i_j}\).
+		
+		Conversely, let \(I = \langle I_1,\dots,I_n \rangle \in (2^\mathcal{I})^*\) be an infrequent sequence.
+		By anti-monotonicity, the sequence \(S = \langle J_1,\dots,J_m \rangle \in (2^\mathcal{I})^*\) is then also infrequent, if there exist integers \(1 \leq j_1 < \dots < j_n \leq m\) such that for all \(i\in\{1,\ldots,n\} : I_i \subseteq J_{j_i}\).
+		
+		This formalizes the intuition of anti-monotonicity: ``If a sequence is frequent, all sequences which are contained in it are also frequent; if a sequence is infrequent, all sequences in which it is contained are also infrequent.''
+		\item No, there is no anti-monotonicity property.
+		\begin{proof}
+			By contradiction.
+			Take the single transaction database \(\seq{\{A\}, \{B\}, \{B\}}\).
+			For this database, \(\mathrm{support}(\seq{\{A\}}) = 1 < \mathrm{support}(\seq{\{A\}\{B\}}) = 2\), despite the fact that \(\seq{\{A\}} \subseteq \seq{\{A\}\{B\}}\).
+		\end{proof}
+	\end{enumerate}
+	\item \begin{enumerate}
+		\item Let the relation be written as \(\preceq\). \(\preceq\) is a partial order if and only if the three following properties are satisfied:
+		\begin{itemize}
+			\item Reflexivity: \(a \preceq a\).
+			\item Antisymmetry: if \(a \preceq b\) and \(b \preceq a\), then \(a = b\).
+			\item Transitivity: if \(a \preceq b\) and \(b \preceq c\), then \(a \preceq c\).
+		\end{itemize}
+		\item We assume all elements are different.
+		This relation is then not a partial order.
+		\begin{proof}
+			By contradiction.
+			Since \(A \succeq C\) and \(C \succeq D\), by transitivity one would obtain \(A \succeq D\), however this is not the case.
+		\end{proof}
+		\item We do not prove it formally, but \textit{match} is a partial order, since it (intuitively) verifies all three required properties.
+		\item This constraint is a gap constraint.
+		It expresses the fact that the number of itemsets between matched itemsets in a patter must not exceed some limit \(g - 1\).
+		\item No, it is no longer a partial order.
+		\begin{proof}
+			By contradiction.
+			Take \(X = \seq{\{A\}, \{D\}}, Y = \seq{\{A\}, \{C\}, \{D\}}, Z = \seq{\{A\}, \{B\}, \{C\}, \{D\}}\), with \(g=2\).
+			It is easy to verify that \(\mathit{match}(X, Y)\) and \(\mathit{match}(Y, Z)\), however, \(\lnot \mathit{match}(X, Z)\) since the gap between \(\{A\}\) and \(\{D\}\) in \(Z\) is \(3 > g = 2\).
+		\end{proof}
+		\item With the length constraint, \textit{match} is still a partial order.
+		
+		When combining the two constraints, \textit{match} is a partial order if \(g \ge \ell\), as this makes the gap constraint redundant.
+	\end{enumerate}
+	\item \begin{enumerate}
+		\item \begin{itemize}
+			\item At level 1, we generate \(\seq{\{A\}}\), \(\seq{\{B\}}\), \(\seq{\{C\}}\), \(\seq{\{D\}}\).
+			All are frequent.
+			\item At level 2, we generate \(\seq{\{A, B\}}\), \(\seq{\{A, C\}}\), \(\seq{\{A, D\}}\), \(\seq{\{A\}, \{A\}}\), \(\seq{\{A\}, \{B\}}\), \(\seq{\{A\}, \{C\}}\), \(\seq{\{A\}, \{D\}}\), \(\seq{\{B\}, \{A\}}\), \(\seq{\{B\}, \{B\}}\), \(\seq{\{B\}, \{C\}}\), \(\seq{\{B\}, \{D\}}\), \(\seq{\{C\}, \{A\}}\),  \(\seq{\{C\}, \{B\}}\), \(\seq{\{C\}, \{C\}}\), \(\seq{\{C\}, \{D\}}\), \(\seq{\{D\}, \{A\}}\), \(\seq{\{D\}, \{B\}}\), \(\seq{\{D\}, \{C\}}\), \(\seq{\{D\}, \{D\}}\).
+			
+			The frequent sequences are \(\seq{\{A, B\}}\), \(\seq{\{A, C\}}\), \(\seq{\{A\}, \{A\}}\), \(\seq{\{A\}, \{B\}}\), \(\seq{\{A\}, \{C\}}\), \(\seq{\{A\}, \{D\}}\), \(\seq{\{B\}, \{C\}}\), \(\seq{\{B\}, \{D\}}\), \(\seq{\{C\}, \{A\}}\), \(\seq{\{C\}, \{B\}}\), \(\seq{\{C\}, \{D\}}\).
+			\item At level 3, we generate \(\seq{\{A, B, C\}}\), \(\seq{\{A, B\}, \{A\}}\), \(\seq{\{A, B\}, \{B\}}\), \(\seq{\{A, B\}, \{C\}}\), \(\seq{\{A, B\}, \{D\}}\), \(\seq{\{A, C\}, \{A\}}\), \dots
+			
+			The frequent sequences are \(\seq{\{A, B\}, \{C\}}, \seq{\{A, B\},\{D\}}\), \(\seq{\{A\}, \{A, C\}}\).
+			\item At level 4, we generate \(\seq{\{A, B\}, \{C, D\}}\), \(\seq{\{A, B\}, \{C\}, \{D\}}\), \(\seq{\{A, B\}, \{D\}, \{C\}}\).
+			
+			There are no more frequent sequences, and the GSP algorithm terminates.
+		\end{itemize}
+		Once this is done, we can eliminate all sequences which do not contain the item \(A\).
+		\item We denote \(X\) being added to the last itemset of a sequence as branching on \(X\), and a new itemset being added starting with \(X\) by branching on \(\vert X\).
+		The trie of frequent sequences looks like this:
+		\begin{center}
+			\begin{forest}
+				for tree={
+					parent anchor=south,
+					child anchor=north,
+					fit=band,% spaces the tree out a little to avoid collisions
+				}
+				[root
+						[\(\vert A\)
+							[\(\vert A\)
+								[\(C\)]
+							]
+							[\(\vert B\)]
+							[\(B\)
+								[\(\vert C\)]
+								[\(\vert D\)]
+							]
+							[\(\vert C\)]
+							[\(C\)]
+							[\(\vert D\)]
+						]
+						[\(\vert B\)
+							[\(\vert C\)]
+							[\(\vert D\)]
+						]
+						[\(\vert C\)
+							[\(\vert A\)]
+							[\(\vert B\)]
+							[\(\vert D\)]
+						]
+						[\(\vert D\)]
+				]
+			\end{forest}
+		\end{center}
+	\end{enumerate}
+\end{enumerate}
+
+\end{document}
