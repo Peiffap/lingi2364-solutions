@@ -308,12 +308,14 @@
 			\definecolor {yellowtwenty} {cmyk} {0,0,0,0}
 			%\definecolor{yellowtwenty}{gray}{0.3}
 			\definecolor{gray7}{gray}{0.7}
+			\definecolor{green}{rgb}{0.01, 0.75, 0.24}
+			
 			
 			\everymath{\mathsf{\xdef\mysf{\mathgroup\the\mathgroup\relax}}\mysf}
 			
 			\begin{pspicture}(0.3,-6.6)(13.7,0)
 			\tiny
-			\rput(1.4,-5.2){\rnode{nABCD}{\fcolorbox{blue}{white}{$\color{blue}\{A,B,C,D\}$}}}
+			\rput(1.4,-5.2){\rnode{nABCD}{\fcolorbox{green}{white}{$\color{green}\{A,B,C,D\}$}}}
 			\rput(4.2,-5.2){\rnode{nABCE}{\fcolorbox{black}{white}{$\{A,B,C,E\}$}}}
 			\rput(7,-5.2){\rnode{nABDE}{\fcolorbox{black}{white}{$\{A,B,D,E\}$}}}
 			\rput(9.8,-5.2){\rnode{nACDE}{\fcolorbox{black}{white}{$\{A,C,D,E\}$}}}
